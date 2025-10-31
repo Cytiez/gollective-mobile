@@ -7,9 +7,9 @@ class MyHomePage extends StatelessWidget {
   final String npm = "2406496025";
   final String kelas = "F";
   final List<ItemHomepage> items = [
-    ItemHomepage("All Products", Icons.newspaper, const Color(0xFF1717EB)),
-    ItemHomepage("My Products", Icons.add, const Color(0xFF10B981)),
-    ItemHomepage("Create Product", Icons.logout, const Color(0xFFEF4444)),
+    ItemHomepage("All Products", Icons.newspaper, const Color(0xFF1717EB), 1),
+    ItemHomepage("My Products", Icons.add, const Color(0xFF10B981), 2),
+    ItemHomepage("Create Product", Icons.logout, const Color(0xFFEF4444), 3),
   ];
 
 @override
@@ -18,7 +18,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       // AppBar adalah bagian atas halaman yang menampilkan judul.
       appBar: AppBar(
-        // Judul aplikasi "Football News" dengan teks putih dan tebal.
+        // Judul aplikasi "Gollective" dengan teks putih dan tebal.
         title: const Text(
           'Gollective',
           style: TextStyle(
@@ -59,7 +59,7 @@ class MyHomePage extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'Selamat datang di Gollcetive',
+                      'Selamat datang di Gollective',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,
@@ -96,8 +96,9 @@ class ItemHomepage {
  final String name;
  final IconData icon;
  final Color color;
+ final int angka;
 
- ItemHomepage(this.name, this.icon, this.color);
+ ItemHomepage(this.name, this.icon, this.color, this.angka);
 }
 
 class InfoCard extends StatelessWidget {
@@ -168,6 +169,11 @@ class ItemCard extends StatelessWidget {
               // Menyusun ikon dan teks di tengah kartu.
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text(
+                  item.angka.toString(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
+                ),
                 Icon(
                   item.icon,
                   color: Colors.white,
