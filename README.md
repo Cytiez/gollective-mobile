@@ -216,11 +216,17 @@ TUGAS 9
         - Membuat login.dart dan register.dart. Menggunakan request.login dan request.postJson untuk berkomunikasi dengan Django.
         - Menangani respons error dan menampilkan SnackBar atau AlertDialog jika login gagal.
     5. Halaman Daftar Produk
-        - Membuat product_entry_list.dart yang menggunakan FutureBuilder.
-        - Mengambil data via request.get. Data dikonversi jadi list Products.
-        - Menampilkan data menggunakan widget custom ProductEntryCard yang saya buat di widgets/product_entry_card.dart, menampilkan detail spesifik seperti "Authentic/Replica" dan logo klub (via URL thumbnail).
-    6. Halaman Form
-        - Membuat product_form.dart. Form ini memiliki input lengkap sesuai model Django saya: TextFormField untuk nama/klub/musim, Dropdown untuk kategori/kondisi, dan Switch untuk status authenticity.
-        - Mengirim data JSON ke Django saat tombol Save ditekan.
-    7. Logout
+        - Membuat product_entry_list.dart yang menerima parameter filterType.
+        - Memodifikasi fungsi fetchProducts untuk mengirim request GET dengan parameter query, misalnya endpoint/json/?filter=my untuk "My Products" dan endpoint/json/?filter=all untuk "All Products".
+        - Menampilkan data menggunakan widget custom ProductEntryCard.
+    6. Navigasi
+        - Memodifikasi widget ItemCard di lib/widgets/product_card.dart.
+        - Menambahkan logika navigasi di mana tombol "All Products" membuka halaman list dengan filter 'all', dan tombol "My Products" membuka halaman list dengan filter 'my'.
+    7. Halaman Form
+        - Membuat product_form.dart dengan input lengkap (TextFormField, Dropdown, SwitchListTile).
+        - Mengirim data JSON via request.postJson ke endpoint khusus /product/add-flutter/ untuk menghindari masalah CSRF yang terjadi pada endpoint AJAX biasa.
+        - Menyesuaikan parsing respons sukses dengan mengecek response['status'] == 'success' sesuai format JsonResponse dari Django.
+    8. Halaman Detail
+        - Membuat product_detail.dart yang menampilkan seluruh atribut produk secara lengkap. Halaman ini diakses dengan menekan kartu produk di halaman list.
+    9. Logout
         - Menambahkan logika logout pada widget kartu menu atau drawer, memanggil request.logout untuk membersihkan sesi.

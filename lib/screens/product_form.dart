@@ -364,7 +364,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         );
                         if (!context.mounted) return;
 
-                        if (response['success'] == true) {
+                        if (response['status'] == 'success') {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("Product successfully saved!"),
