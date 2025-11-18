@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gollective/widgets/left_drawer.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:gollective/screens/menu.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -33,6 +37,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Add News Form')),
@@ -332,51 +337,55 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.indigo),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Produk berhasil tersimpan'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Product Name: $_name'),
-                                    Text('Description: $_description'),
-                                    Text(
-                                      'Category: ${_category[0].toUpperCase() + _category.substring(1)}',
-                                    ),
-                                    Text('Price: $_price'),
-                                    Text('Club: $_clubname'),
-                                    Text('Season: $_season'),
-                                    Text('Release Year: $_release_year'),
-                                    Text(
-                                      'Condition: ${_condition[0].toUpperCase() + _condition.substring(1)}',
-                                    ),
-                                    Text(
-                                      'Authentic: ${_authenticity ? "Yes" : "No"}',
-                                    ),
-                                    Text('Thumbnail: $_thumbnail'),
-                                    Text(
-                                      'Featured: ${_isFeatured ? "Yes" : "No"}',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _formKey.currentState!.reset();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
+                        // To connect Android emulator with Django on localhost, use URL http://10.0.2.2:8000
+                        // If using Chrome/iOS simulator, use http://localhost:8000
+                        final categorySlug = {
+                          'Home Jersey': 'home',
+                          'Away Jersey': 'away',
+                          'Third Jersey': 'third',
+                        }[_category] ?? 'home';
+                        final response = await request.postJson(
+                          "http://localhost:8000/product/create-ajax/",
+                          jsonEncode({
+                            "name": _name,
+                            "price": _price,
+                            "description": _description,
+                            "thumbnail": _thumbnail,
+                            "category": categorySlug,
+                            "is_featured": _isFeatured,
+                            "club_name": _clubname,
+                            "season": _season,
+                            "release_year": _release_year,
+                            "condition": _condition.toLowerCase(),
+                            "authenticity": _authenticity,
+                          }),
                         );
+                        if (!context.mounted) return;
+
+                        if (response['success'] == true) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Product successfully saved!"),
+                            ),
+                          );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyHomePage(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  response['message'] ??
+                                      "Something went wrong, please try again.",
+                                ),
+                            ),
+                          );
+                        }
                       }
                     },
                     child: const Text(
