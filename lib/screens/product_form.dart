@@ -347,7 +347,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           'Third Jersey': 'third',
                         }[_category] ?? 'home';
                         final response = await request.postJson(
-                          "http://localhost:8000/product/create-ajax/",
+                          "http://localhost:8000/product/add-flutter/",
                           jsonEncode({
                             "name": _name,
                             "price": _price,
